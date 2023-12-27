@@ -26,9 +26,9 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const item = await this.usersRepository.findOneOrFail({ where: { id } });
+    const item = await this.usersRepository.findOne({ where: { id } });
     if (!item) {
-      throw new EntityNotFoundError(User, `User entity not found,id is ${id}`);
+      throw new EntityNotFoundError(User, { id });
     }
     return item;
   }
