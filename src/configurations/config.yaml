@@ -11,3 +11,8 @@ db:
   database: 'test'
   autoLoadEntities: true
   synchronize: true
+
+jwt:
+  secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
+  signOptions:
+    expiresIn: '3d'

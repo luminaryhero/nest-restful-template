@@ -42,4 +42,12 @@ export class UsersService {
     const item = await this.findOne(id);
     return this.usersRepository.remove(item);
   }
+
+  async findOneByName(username: string) {
+    const item = await this.usersRepository.findOneBy({ username });
+    if (!item) {
+      throw new EntityNotFoundError(User, { username });
+    }
+    return item;
+  }
 }

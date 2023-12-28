@@ -3,11 +3,11 @@ import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateUserDto {
   @IsNotEmpty({ groups: ['create'] })
   @IsOptional({ groups: ['update'] })
-  firstName: string;
+  username: string;
 
   @IsNotEmpty({ groups: ['create'] })
   @IsOptional({ groups: ['update'] })
-  lastName: string;
+  password: string;
 
   @IsBoolean({ always: true })
   @IsOptional({ always: true })
