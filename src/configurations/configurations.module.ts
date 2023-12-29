@@ -42,6 +42,25 @@ import * as Joi from 'joi';
           autoLoadEntities: Joi.bool().valid(true),
           synchronize: Joi.bool(),
         }),
+        jwt: Joi.object({
+          token: Joi.object({
+            secret: Joi.string(),
+            signOptions: Joi.object({
+              expiresIn: Joi.string(),
+            }),
+          }),
+          refreshToken: Joi.object({
+            secret: Joi.string(),
+            expiresIn: Joi.string(),
+          }),
+        }),
+        bcrypt: Joi.object({
+          saltOrRounds: Joi.valid(Joi.number(), Joi.string()),
+        }),
+        throttler: Joi.object({
+          ttl: Joi.number(),
+          limit: Joi.number(),
+        }),
       }),
     }),
   ],
