@@ -13,6 +13,17 @@ db:
   synchronize: true
 
 jwt:
-  secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
-  signOptions:
+  token:
+    secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
+    signOptions:
+      expiresIn: '3h'
+  refreshToken:
+    secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
     expiresIn: '3d'
+
+bcrypt:
+  saltOrRounds: 10
+
+throttler:
+  ttl: 60000
+  limit: 10

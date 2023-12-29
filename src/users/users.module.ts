@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './commons/auth.guard';
 import { UserSubscriber } from './subscribers/user.subscriber';
-import { DataSource } from 'typeorm';
 
 @Module({
   imports: [

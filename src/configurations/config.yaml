@@ -23,3 +23,7 @@ jwt:
 
 bcrypt:
   saltOrRounds: 10
+
+throttler:
+  ttl: 60000
+  limit: 10
