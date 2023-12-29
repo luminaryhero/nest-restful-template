@@ -8,9 +8,7 @@ import {
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
   private readonly saltOrRounds: string | number;
@@ -30,7 +28,6 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       event.entity.password,
       saltOrRounds,
     );
-    console.log(this.saltOrRounds);
   }
 
   async beforeUpdate(event: UpdateEvent<User>) {

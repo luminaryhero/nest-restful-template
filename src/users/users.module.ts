@@ -24,12 +24,7 @@ import { DataSource } from 'typeorm';
   controllers: [UsersController],
   providers: [
     UsersService,
-    {
-      provide: UserSubscriber,
-      inject: [DataSource, ConfigService],
-      useFactory: (dataSource: DataSource, config: ConfigService) =>
-        new UserSubscriber(dataSource, config),
-    },
+    UserSubscriber,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
