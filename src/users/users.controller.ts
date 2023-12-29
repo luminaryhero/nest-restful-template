@@ -16,6 +16,7 @@ import { PagintionDto } from 'src/databases/dto/pagination.dto';
 import { UseValidation } from 'src/commons/validation.pipe';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from './commons/public.decorator';
+import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 export class UsersController {
@@ -65,8 +66,9 @@ export class UsersController {
   async login(@Body() createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;
     const user = await this.usersService.findOneByName(username);
-    if (user?.password !== password) {
-      throw new UnauthorizedException();
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('用户名或密码输入错误');
     }
     const payload = { sub: user.id, username: user.username };
     return {

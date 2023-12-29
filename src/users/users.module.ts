@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './commons/auth.guard';
+import { UserSubscriber } from './subscribers/user.subscriber';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -22,6 +24,12 @@ import { AuthGuard } from './commons/auth.guard';
   controllers: [UsersController],
   providers: [
     UsersService,
+    {
+      provide: UserSubscriber,
+      inject: [DataSource, ConfigService],
+      useFactory: (dataSource: DataSource, config: ConfigService) =>
+        new UserSubscriber(dataSource, config),
+    },
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
