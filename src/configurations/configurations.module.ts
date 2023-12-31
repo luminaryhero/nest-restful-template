@@ -45,9 +45,7 @@ import * as Joi from 'joi';
         jwt: Joi.object({
           token: Joi.object({
             secret: Joi.string(),
-            signOptions: Joi.object({
-              expiresIn: Joi.string(),
-            }),
+            expiresIn: Joi.string(),
           }),
           refreshToken: Joi.object({
             secret: Joi.string(),

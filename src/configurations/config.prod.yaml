@@ -15,11 +15,10 @@ db:
 jwt:
   token:
     secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
-    signOptions:
-      expiresIn: '3h'
+    expiresIn: '30m'
   refreshToken:
     secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
-    expiresIn: '3d'
+    expiresIn: '7d'
 
 bcrypt:
   saltOrRounds: 10
