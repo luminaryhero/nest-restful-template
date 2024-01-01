@@ -15,7 +15,7 @@ db:
 jwt:
   secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
   signOptions:
-    expiresIn: '30s'
+    expiresIn: '3h'
 
 bcrypt:
   saltOrRounds: 10

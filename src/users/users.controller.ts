@@ -17,7 +17,6 @@ import { UseValidation } from 'src/commons/validation.pipe';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from './commons/public.decorator';
 import * as bcrypt from 'bcrypt';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('users')
 export class UsersController {
@@ -73,28 +72,27 @@ export class UsersController {
     }
     const payload = { sub: user.id, username: user.username };
 
-    
-
     return {
       access_token: await this.jwtService.signAsync(payload),
-      refresh_token: await this.jwtService.sign(payload, { expiresIn: '120s' }),
+      refresh_token: await this.jwtService.sign(payload, { expiresIn: '3d' }),
     };
   }
 
   @Public()
   @UseValidation()
   @Post('refresh')
-  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+  async refresh(@Body('refreshToken') refreshToken: string) {
     try {
-      const data = this.jwtService.verify(refreshTokenDto.refreshToken);
+      const data = this.jwtService.verify(refreshToken);
       const user = await this.usersService.findOne(data.sub);
 
       const payload = { sub: user.id, username: user.username };
+
       return {
         access_token: await this.jwtService.signAsync(payload),
-        refresh_token: await this.jwtService.sign(payload, {
-          expiresIn: '120s',
-        }),
+        // refresh_token: await this.jwtService.sign(payload, {
+        //   expiresIn: '3d',
+        // }),
       };
     } catch (e) {
       throw new UnauthorizedException('token 失效，请重新登录');

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { DatabasesModule } from './databases/databases.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
@@ -23,6 +23,10 @@ import { ConfigService } from '@nestjs/config';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
     {
       provide: APP_FILTER,

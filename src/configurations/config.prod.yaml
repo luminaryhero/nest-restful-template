@@ -13,12 +13,9 @@ db:
   synchronize: true
 
 jwt:
-  token:
-    secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
-    expiresIn: '30m'
-  refreshToken:
-    secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
-    expiresIn: '7d'
+  secret: NymS8iF33VEhVrFUX3s67N5sVFqcrf6J
+  signOptions:
+    expiresIn: '3h'
 
 bcrypt:
   saltOrRounds: 10
