@@ -15,6 +15,7 @@ import { RolesController } from './roles.controller';
 import { PermsController } from './perms.controller';
 import { PermsService } from './perms.service';
 import { Perm } from './entities/perm.entity';
+import { PermsGuard } from './commons/perms.guard';
 
 @Module({
   imports: [
@@ -40,6 +41,10 @@ import { Perm } from './entities/perm.entity';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermsGuard,
     },
   ],
 })

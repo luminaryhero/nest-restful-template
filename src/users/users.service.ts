@@ -17,12 +17,13 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { roleIds } = createUserDto;
+    const { username, password, roleIds } = createUserDto;
     const item = await this.usersRepository.save({
-      ...createUserDto,
+      username,
+      password,
       roles: await this.rolesService.findRoleByIds(roleIds),
     });
-    return item;
+    return this.findOne(item.id);
   }
 
   async findAll(pagintionDto: PagintionDto) {
