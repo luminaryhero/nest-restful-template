@@ -25,6 +25,14 @@ export class PermsGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
+
+    // 管理员角色默认拥有所有权限
+    const { roles } = await this.uersService.findOne(user.sub);
+    if (roles.some((role) => role.name === 'admin')) {
+      return true;
+    }
+
+    // 用户权限
     const permNames = await this.uersService.findPermsById(user.sub);
 
     if (!requiredPerms.some((role) => permNames?.includes(role))) {

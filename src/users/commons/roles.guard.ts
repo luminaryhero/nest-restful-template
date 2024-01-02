@@ -29,7 +29,6 @@ export class RolesGuard implements CanActivate {
     const users = await this.uersService.findOne(user.sub);
     const roles = users.roles;
     const roleNames = roles.map((role) => role.name);
-    console.log(user.sub, users, roleNames);
 
     if (!requiredRoles.some((role) => roleNames?.includes(role))) {
       throw new ForbiddenException('用户角色权限不足');

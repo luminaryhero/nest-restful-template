@@ -76,7 +76,10 @@ export class UsersService {
       return [];
     }
     const permNames = roles.reduce(
-      (perv, next) => [...perv, ...next.perms.map((perm) => perm.name)],
+      (perv, next) => [
+        ...perv,
+        ...(next.perms?.map((perm) => perm.name) || []),
+      ],
       [],
     );
 

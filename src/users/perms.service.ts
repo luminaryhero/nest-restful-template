@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePermDto } from './dto/create-perm.dto';
 import { UpdatePermDto } from './dto/update-perm.dto';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { EntityNotFoundError, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Perm } from './entities/perm.entity';
 import { PagintionDto } from 'src/databases/dto/pagination.dto';
@@ -12,8 +12,13 @@ export class PermsService {
     @InjectRepository(Perm) private permsRepository: Repository<Perm>,
   ) {}
 
-  async create(createPermDto: CreatePermDto) {
-    return this.permsRepository.save(createPermDto);
+  async create(createPermDtos: CreatePermDto[]) {
+    const items = await this.permsRepository.save(createPermDtos);
+    return this.permsRepository.find({
+      where: {
+        id: In(items.map((item) => item.id)),
+      },
+    });
   }
 
   async findAll(pagintionDto: PagintionDto) {
