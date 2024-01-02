@@ -12,10 +12,13 @@ import { RolesGuard } from './commons/roles.guard';
 import { Role } from './entities/role.entity';
 import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
+import { PermsController } from './perms.controller';
+import { PermsService } from './perms.service';
+import { Perm } from './entities/perm.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([User, Role, Perm]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -24,11 +27,12 @@ import { RolesController } from './roles.controller';
       }),
     }),
   ],
-  controllers: [UsersController, RolesController],
+  controllers: [UsersController, RolesController, PermsController],
   providers: [
     UsersService,
     UserSubscriber,
     RolesService,
+    PermsService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

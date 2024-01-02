@@ -26,7 +26,12 @@ export class RolesService {
   }
 
   async findOne(id: number) {
-    const item = await this.rolesRepository.findOne({ where: { id } });
+    const item = await this.rolesRepository.findOne({
+      where: { id },
+      relations: {
+        perms: true,
+      },
+    });
     if (!item) {
       throw new EntityNotFoundError(Role, { id });
     }
@@ -45,8 +50,22 @@ export class RolesService {
 
   async findRoleByIds(roleIds: number[]) {
     if (!roleIds || !roleIds.length) return [];
-    return this.rolesRepository.findBy({
-      id: In(roleIds),
+    return this.rolesRepository.find({
+      where: {
+        id: In(roleIds),
+      },
+      relations: {
+        perms: true,
+      },
+    });
+  }
+
+  async findPerms(id: number) {
+    return this.rolesRepository.find({
+      where: { id },
+      relations: {
+        perms: true,
+      },
     });
   }
 }

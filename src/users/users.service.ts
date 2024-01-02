@@ -68,4 +68,17 @@ export class UsersService {
     }
     return item;
   }
+
+  async findPermsById(userId: number): Promise<string[]> {
+    const { roles } = await this.findOne(userId);
+    if (!roles || !roles.length) {
+      return [];
+    }
+    const permNames = roles.reduce(
+      (perv, next) => [...perv, ...next.perms.map((perm) => perm.name)],
+      [],
+    );
+
+    return permNames;
+  }
 }
