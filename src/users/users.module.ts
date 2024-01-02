@@ -8,10 +8,14 @@ import { ConfigService } from '@nestjs/config';
 import { UserSubscriber } from './subscribers/user.subscriber';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './commons/auth.guard';
+import { RolesGuard } from './commons/roles.guard';
+import { Role } from './entities/role.entity';
+import { RolesService } from './roles.service';
+import { RolesController } from './roles.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -20,13 +24,18 @@ import { AuthGuard } from './commons/auth.guard';
       }),
     }),
   ],
-  controllers: [UsersController],
+  controllers: [UsersController, RolesController],
   providers: [
     UsersService,
     UserSubscriber,
+    RolesService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

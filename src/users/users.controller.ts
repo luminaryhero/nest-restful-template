@@ -13,10 +13,11 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PagintionDto } from 'src/databases/dto/pagination.dto';
-import { UseValidation } from 'src/commons/validation.pipe';
+import { CheckDto } from 'src/commons/validation.pipe';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from './commons/public.decorator';
 import * as bcrypt from 'bcrypt';
+import { CheckRoles } from './commons/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -25,13 +26,14 @@ export class UsersController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @UseValidation('create')
+  @CheckRoles('admin')
+  @CheckDto('create')
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @UseValidation()
+  @CheckDto()
   @Get()
   findAll(@Query() pagintionDto: PagintionDto) {
     return this.usersService.findAll(pagintionDto);
@@ -42,7 +44,8 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @UseValidation('update')
+  @CheckRoles('admin')
+  @CheckDto('update')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
@@ -53,15 +56,16 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 
-  @UseValidation('create')
   @Public()
+  @CheckDto('create')
   @Post('/register')
   register(@Body() createUserDto: CreateUserDto) {
+    createUserDto.roleIds = [];
     return this.usersService.create(createUserDto);
   }
 
-  @UseValidation('create')
   @Public()
+  @CheckDto('create')
   @Post('login')
   async login(@Body() createUserDto: CreateUserDto) {
     const { username, password } = createUserDto;
@@ -73,13 +77,14 @@ export class UsersController {
     const payload = { sub: user.id, username: user.username };
 
     return {
+      user,
       access_token: await this.jwtService.signAsync(payload),
       refresh_token: await this.jwtService.sign(payload, { expiresIn: '3d' }),
     };
   }
 
   @Public()
-  @UseValidation()
+  @CheckDto()
   @Post('refresh')
   async refresh(@Body('refreshToken') refreshToken: string) {
     try {
@@ -90,9 +95,6 @@ export class UsersController {
 
       return {
         access_token: await this.jwtService.signAsync(payload),
-        // refresh_token: await this.jwtService.sign(payload, {
-        //   expiresIn: '3d',
-        // }),
       };
     } catch (e) {
       throw new UnauthorizedException('token 失效，请重新登录');

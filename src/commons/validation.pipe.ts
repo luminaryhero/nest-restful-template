@@ -4,7 +4,7 @@ import {
   ValidationPipeOptions,
 } from '@nestjs/common';
 
-export function UseValidation(group?: string) {
+export function CheckDto(group?: string) {
   const options: ValidationPipeOptions = {
     transform: true,
     whitelist: true,

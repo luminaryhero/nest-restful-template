@@ -1,19 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PagintionDto } from 'src/databases/dto/pagination.dto';
+import { RolesService } from './roles.service';
 
 @Injectable()
 export class UsersService {
+  @Inject()
+  private readonly rolesService: RolesService;
+
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const item = await this.usersRepository.save(createUserDto);
+    const { roleIds } = createUserDto;
+    const item = await this.usersRepository.save({
+      ...createUserDto,
+      roles: await this.rolesService.findRoleByIds(roleIds),
+    });
     return item;
   }
 
@@ -26,7 +34,12 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const item = await this.usersRepository.findOne({ where: { id } });
+    const item = await this.usersRepository.findOne({
+      where: { id },
+      relations: {
+        roles: true,
+      },
+    });
     if (!item) {
       throw new EntityNotFoundError(User, { id });
     }
@@ -44,7 +57,12 @@ export class UsersService {
   }
 
   async findOneByName(username: string) {
-    const item = await this.usersRepository.findOneBy({ username });
+    const item = await this.usersRepository.findOne({
+      where: { username },
+      relations: {
+        roles: true,
+      },
+    });
     if (!item) {
       throw new EntityNotFoundError(User, { username });
     }
