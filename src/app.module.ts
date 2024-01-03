@@ -1,4 +1,9 @@
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { DatabasesModule } from './databases/databases.module';
 import { ConfigurationsModule } from './configurations/configurations.module';
@@ -7,6 +12,8 @@ import { TransformInterceptor } from './commons/transform.interceptor';
 import { AllExceptionsFilter } from './commons/all-exception.filter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
+import { RecordsModule } from './records/records.module';
+import { LoggerMiddleware } from './records/commmons/logger.middleware';
 
 @Module({
   imports: [
@@ -17,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => [config.get('throttler')],
     }),
+    RecordsModule,
   ],
   controllers: [],
   providers: [
@@ -38,4 +46,8 @@ import { ConfigService } from '@nestjs/config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

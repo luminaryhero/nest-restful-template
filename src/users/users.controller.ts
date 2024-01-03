@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,6 +25,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly logger: Logger,
   ) {}
 
   @CheckRoles('admin')
@@ -36,6 +38,7 @@ export class UsersController {
   @CheckDto()
   @Get()
   findAll(@Query() pagintionDto: PagintionDto) {
+    this.logger.warn('This action returns all cats');
     return this.usersService.findAll(pagintionDto);
   }
 
