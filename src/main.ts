@@ -19,13 +19,14 @@ async function bootstrap() {
   const port = config.get('http.port');
   const url = `http://${host}:${port}`;
 
+  app.setGlobalPrefix('/api/v1');
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Apis example')
+    .setTitle('APIs example')
     .setDescription('The API description')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('/api/v1/docs', app, document);
 
   await app.listen(port, () => {
     console.info(`APPLICATION STARTED AT ${url}`);
