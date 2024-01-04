@@ -14,7 +14,9 @@ import { UpdatePermDto } from './dto/update-perm.dto';
 import { CheckDto } from 'src/commons/validation.pipe';
 import { PagintionDto } from 'src/databases/dto/pagination.dto';
 import { CheckPerms } from './commons/perms.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('权限')
 @Controller('perms')
 export class PermsController {
   constructor(private readonly permsService: PermsService) {}
@@ -29,19 +31,32 @@ export class PermsController {
     return this.permsService.create(createPermDtos);
   }
 
+  /**
+   * 分页
+   */
   @CheckPerms('perms:query')
   @CheckDto()
   @Get()
   findAll(@Query() pagintionDto: PagintionDto) {
-    return this.permsService.findAll(pagintionDto);
+    const { limit = 10, page = 1 } = pagintionDto;
+    return this.permsService.findAll({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
   }
 
+  /**
+   * 详情
+   */
   @CheckPerms('perms:query')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.permsService.findOne(+id);
   }
 
+  /**
+   * 更新
+   */
   @CheckPerms('perms:update')
   @CheckDto('update')
   @Patch(':id')
@@ -49,6 +64,9 @@ export class PermsController {
     return this.permsService.update(+id, updatePermDto);
   }
 
+  /**
+   * 删除
+   */
   @CheckPerms('perms:remove')
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -2,27 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PagintionDto } from 'src/databases/dto/pagination.dto';
-import { Repository, EntityNotFoundError, In } from 'typeorm';
+import { Repository, EntityNotFoundError, In, FindManyOptions } from 'typeorm';
 import { Role } from './entities/role.entity';
+import { Perm } from './entities/perm.entity';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Role) private rolesRepository: Repository<Role>,
+    @InjectRepository(Perm) private permsRepository: Repository<Perm>,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
-    const item = await this.rolesRepository.save(createRoleDto);
-    return item;
+    const { permIds = [] } = createRoleDto;
+    const item = await this.rolesRepository.save({
+      ...createRoleDto,
+      perms: await this.permsRepository.find({
+        where: {
+          id: In(permIds),
+        },
+      }),
+    });
+
+    return this.findOne(item.id);
   }
 
-  async findAll(pagintionDto: PagintionDto) {
-    const { limit = 10, page = 1 } = pagintionDto;
-    return this.rolesRepository.find({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  async findAll(options: FindManyOptions<Role>) {
+    return this.rolesRepository.find(options);
   }
 
   async findOne(id: number) {

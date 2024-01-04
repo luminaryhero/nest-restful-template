@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePermDto } from './dto/create-perm.dto';
 import { UpdatePermDto } from './dto/update-perm.dto';
-import { EntityNotFoundError, In, Repository } from 'typeorm';
+import { EntityNotFoundError, FindManyOptions, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Perm } from './entities/perm.entity';
-import { PagintionDto } from 'src/databases/dto/pagination.dto';
 
 @Injectable()
 export class PermsService {
@@ -21,12 +20,8 @@ export class PermsService {
     });
   }
 
-  async findAll(pagintionDto: PagintionDto) {
-    const { limit = 10, page = 1 } = pagintionDto;
-    return this.permsRepository.find({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  async findAll(options?: FindManyOptions<Perm>) {
+    return this.permsRepository.find(options);
   }
 
   async findOne(id: number) {

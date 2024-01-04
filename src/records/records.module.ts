@@ -1,7 +1,5 @@
 import { Global, Logger, Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { WinstonModule, utilities } from 'nest-winston';
-import { join } from 'path';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 

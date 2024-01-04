@@ -19,7 +19,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Public } from './commons/public.decorator';
 import * as bcrypt from 'bcrypt';
 import { CheckRoles } from './commons/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('用户')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -28,6 +30,9 @@ export class UsersController {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * 新增
+   */
   @CheckRoles('admin')
   @CheckDto('create')
   @Post()
@@ -35,18 +40,26 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  /**
+   * 分页
+   */
   @CheckDto()
   @Get()
   findAll(@Query() pagintionDto: PagintionDto) {
-    this.logger.warn('This action returns all cats');
     return this.usersService.findAll(pagintionDto);
   }
 
+  /**
+   * 详情
+   */
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
+  /**
+   * 更新
+   */
   @CheckRoles('admin')
   @CheckDto('update')
   @Patch(':id')
@@ -54,11 +67,17 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
+  /**
+   * 删除
+   */
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
 
+  /**
+   * 注册
+   */
   @Public()
   @CheckDto('create')
   @Post('/register')
@@ -67,6 +86,9 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  /**
+   * 登录
+   */
   @Public()
   @CheckDto('create')
   @Post('login')
@@ -77,6 +99,9 @@ export class UsersController {
     if (!isMatch) {
       throw new UnauthorizedException('用户名或密码输入错误');
     }
+    this.logger.log(
+      `用户${username}于${Date.now().toLocaleString()}登录了系统`,
+    );
     const payload = { sub: user.id, username: user.username };
 
     return {
@@ -86,6 +111,9 @@ export class UsersController {
     };
   }
 
+  /**
+   * 刷新Token
+   */
   @Public()
   @CheckDto()
   @Post('refresh')
